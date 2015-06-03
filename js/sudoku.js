@@ -13,7 +13,7 @@ var option, OPTIONS = ["lowlevel", "midlevel", "highlevel", "aboutAuthor"],
 	globalSudoku;
 
 //数独部分算法，包括数独生成，数独挖空，数独求解，数独单个提示
-function sudokuAlg() {
+var sudokuAlg = (function() {
 	var SIZE = 9, sudokuMap = new Array(SIZE);
 
 	for (var i = 0; i < SIZE; i++) {
@@ -81,25 +81,30 @@ function sudokuAlg() {
 			dfs(0, tempSudoku);
 		},
 		//数独挖空,随机,num表示挖的孔数目
-		sudokuDig: function (num) {
+		sudokuDig: function (num,tempSudoku) {
 			var m, n, temp, sudokuArr = [];
 			while (num > 0) {
 				m = Math.floor(SIZE * Math.random());
 				n = Math.floor(SIZE * Math.random());
 				temp = m + "" + n;
 				if (sudokuArr.indexOf(m + "" + n) === -1) {
-					globalSudoku[m][n] = 0;
+					tempSudoku[m][n] = 0;
 					sudokuArr.push(temp);
 					num--;
 				}
 			}
 		},
 		//提示的框的位置
-		sudokuRemind: function (x, y) {
-			return globalSudoku[x][y];
+		sudokuRemind: function (x, y,tempSudoku) {
+			dfs(0, tempSudoku);
+			return tempSudoku[x][y];
+		},
+		//更新数独
+		updateSudoku:function(x,y,n,sudokuMap){
+			sudokuMap[x][y] = n;
 		}
 	};
-};
+}());
 
 function domFactory() {
 	var list = {},
@@ -137,22 +142,22 @@ function domFactory() {
 		dom_main.classList.add("out");
 	})
 };
-//生成模态框
-function generateModelBox(){
+//生成模态框,整理事件触发生成
+function generateModelBox(e){
 	$("#modalBox").empty();
 	for(var i = 1;i<=9;i++){
 		var $cellDom = $("<div class='modalCell'>"+i+"</div>");
-		$cellDom.bind("click",setSudokuNum);
 		$("#modalBox").append($cellDom);	
 	}
+	$("#modalBox").bind("click",function(event){
+		e.target.innerText = event.target.innerText;
+		var row = parseInt(e.target.attributes[1].value,10);
+		var col = parseInt(e.target.attributes[2].value,10);
+		sudokuAlg.updateSudoku(row,col,parseInt(event.target.innerText,10),globalSudoku);
+		$("#modalBox").unbind();
+		document.getElementById("modalBox").style.display = "none";
+	});
 	document.getElementById("modalBox").style.display = "block";	
-};
-
-//设置数独内容
-function setSudokuNum(e){
-	console.log(e.currentTarget.innerText);
-	document.getElementById("modalBox").style.display = "none";
-	
 };
 
 
@@ -168,6 +173,9 @@ function generateUI() {
 			var tdDom = document.createElement("td");
 			var divDom = document.createElement("div");
 			divDom.setAttribute("class","cell");
+			//设置单元格所在的位置属性
+			divDom.setAttribute("row",i);
+			divDom.setAttribute("col",j);
 			divDom.innerText = globalSudoku[i][j];
 			
 			if(globalSudoku[i][j] === 0){
@@ -185,10 +193,9 @@ function generateUI() {
 
 
 (function initUI() {
-	var mainFunc = sudokuAlg();
 	option = document.getElementById("option");
-	globalSudoku = mainFunc.generateSudoku();
-	mainFunc.sudokuDig(levelCfg["lowlevel"]);
+	globalSudoku = sudokuAlg.generateSudoku();
+	sudokuAlg.sudokuDig(levelCfg["lowlevel"],globalSudoku);
 	console.log(globalSudoku);
 	generateUI();
 } ());
