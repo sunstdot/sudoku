@@ -7,7 +7,7 @@ div.mainWrapper{
 	width: 100%;
 	background-color: lightblue ;
 }
-div.option,.option:hover,option:active{
+div.option,div.option:hover,div.option:active{
 	width: 110px;
 	position: absolute;
 	left: 10px;
@@ -15,10 +15,10 @@ div.option,.option:hover,option:active{
 	background-color: red;	
 }
 div.option:hover{
-	background-color: royalblue;
+	background-color: royalblue; 	
 }
 div.option:active{
-	background-color: yellow;
+	background-color: yellow;	
 }
 div#sudokuWrapper{
 	position: absolute;
@@ -26,15 +26,27 @@ div#sudokuWrapper{
     top: 200px;
     width: 400px;
     height: 400px;
+	font-weight: bolder;
 	background-color: lightgoldenrodyellow;
 }
+
+div.showModal{
+	position: absolute;
+	left: 400px;
+    top: 200px;
+    width: 400px;
+    height: 400px;
+	background-color: rgba(0, 0, 0, 0.6);
+	text-align: center;
+}
+
 table.mainTable{
 	width: 100%;
 	height: 100%;
 	-webkit-user-select:none;
 	border: 1px solid rosybrown;
 }
-div.cell,div.cell:hover,.cell:active{
+div.cell{
 	position: relative;
 	width: 40px;
 	height:40px;
@@ -42,36 +54,53 @@ div.cell,div.cell:hover,.cell:active{
 	line-height: 40px;
 	margin: 1px,1px,2px,2px;
 }
-div.cell:hover{
+div.gridBord{
 	box-shadow: 0px 0px 6px 3px deeppink inset;
 }
-
-div.cell:active{
+div.gridBord:hover{
+	box-shadow: 0px 0px 6px 3px darkred inset;
+}
+div.gridBord:active{
 	box-shadow: 0px 0px 6px 3px black inset;
 }
 
+
+div.gridNormal{
+	box-shadow: 0px 0px 6px 3px lightslategray inset;
+}
+
+
 /*模态框*/
 div#modalBox{
-	position: absolute;
-  	left: 540px;
-    top: 350px;
+	position:absolute;
+	left: 50%;
+	top: 50%;
     width: 130px;
     height: 130px;
-	background-color: lightseagreen;
+	margin-left: -65px;
+	margin-top: -65px;
+	background-color:rgba(32,178,170,1);
+	-webkit-user-select: none;
 }
-div.modalCell{
+div.modalCell,div.modalCell:hover,div.modalCell:active{
 	position: relative;
 	float: left;
 	width: 40px;
 	height:40px;
 	text-align: center;
 	line-height: 40px;
-	margin: 1px,1px,2px,2px;
+	margin: 1px 1px 2px 2px;
+	color: black;
+	font-weight: bolder;
+	z-index: 99;
+	box-shadow: 0px 0px 6px 3px deeppink inset;
 }
-
-
-
-
+div.modalCell:hover{
+	box-shadow: 0px 0px 6px 3px darkred inset;
+}
+div.modalCell:active{
+	box-shadow: 0px 0px 6px 3px black inset;
+}
 
 div.choice{
 	position: relative;
