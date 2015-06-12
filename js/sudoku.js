@@ -12,11 +12,12 @@ var option, OPTIONS = ["lowlevel", "midlevel", "highlevel", "aboutAuthor"],
 	},
 	globalSudoku,
 	timer,
-	selectedMode;
+	SIZE = 9,
+	domList,optionDom = document.getElementById("option"),selectedMode,selectDom;
 
 //数独部分算法，包括数独生成，数独挖空，数独求解，数独单个提示
 var sudokuAlg = (function () {
-	var SIZE = 9, sudokuMap = new Array(SIZE);
+	var  sudokuMap = new Array(SIZE);
 
 	for (var i = 0; i < SIZE; i++) {
 		sudokuMap[i] = new Array(0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -108,16 +109,30 @@ var sudokuAlg = (function () {
 		//验证输入的数字
 		verifySudoku: function (x, y, n, sudokuMap) {
 			return isValid(x, y, n, sudokuMap);
-		},
+		}
 	};
 } ());
 
 //=============================目录部分begin=======================================
-//使用方式,生成list然后模拟一次点击操作
+var select = function(dom){
+	if(selectDom){
+		mode.removeChild(selectDom);
+	}
+	dom.className = "";
+	dom.style.cssText = "";
+	dom.classList.add("choice");
+	dom.classList.add("selected");
+	dom.style.width = "27px";
+	optionDom.appendChild(dom);
+	selectDom = dom;
+};	
+
+//生成list然后模拟一次点击操作，工厂模式，对OPTINOS中的每个元素进入工厂创建相应dom
 function domFactory() {
 	var list = {}, hidden = true,add = 30,delay = 70,
 		domsIn = function () {
 			var key;
+			optionDom.style.height = '210px';
 			for (key in list) {
 				if (list.hasOwnProperty(key)) {
 					list[key].classList.remove("out");
@@ -129,6 +144,8 @@ function domFactory() {
 			timer.start();
 		},
 		domsOut = function () {
+			var key;
+			optionDom.style.height = '30px';
 			for (key in list) {
 				if (list.hasOwnProperty(key)) {
 					list[key].classList.remove("into");
@@ -153,7 +170,7 @@ function domFactory() {
 			dom_main.style.backgroundColor = "lightgray";
 		};
 		dom_main.classList.add("choice");
-		dom_main.classList.add("unselect");
+		dom_main.classList.add("unselected");
 		dom_main.classList.add("out");
 		
 		
@@ -161,7 +178,7 @@ function domFactory() {
 			timer.restart();	
 		};
 		delay += add;
-		dom_main.stle.webkitAnimationDelay = delay+"ms";
+		dom_main.style.webkitAnimationDelay = delay+"ms";
 		
 		//为dom添加点击事件
 		dom_main.onclick = function(e){
@@ -184,20 +201,20 @@ function domFactory() {
 					}else{
 						domsOut();
 					}
-				};
-				
+				};	
 				dom.addEventListener("mousedown",dom.mouseDown,false);
 				selectedMode = name;
 				//广播改变目录显示
+				select(dom);
 			}else{
 				domsOut();
-			}
-			
-			dom_main.addEventListener("mousedown",dom_main.onclick,false);
-			dom_main.helper.unselected();
-			list[name] = dom_main;
-			//todo 将dom_main添加到文档流中	
+			}		
 		};
+		dom_main.addEventListener("mousedown",dom_main.onclick,false);
+		dom_main.helper.unselected();
+		//todo 将dom_main添加到文档流中
+		list[name] = dom_main;
+		optionDom.appendChild(dom_main);
 	});
 	return list;
 };
@@ -205,6 +222,12 @@ function domFactory() {
 
 
 //=============================目录部分begin=======================================
+function changeMode(type){
+	domList[type].onclick();	
+};
+
+
+
 //生成弹出模态框,整理事件触发生成
 function generateModelBox(e) {
 	$("#testModal").empty();
@@ -216,12 +239,15 @@ function generateModelBox(e) {
 	}
 	//使用模态框确定事件绑定的唯一性
 	$("#modalBox").bind("click", function (event) {
-		var row = parseInt(e.target.attributes[1].value, 10);
-		var col = parseInt(e.target.attributes[2].value, 10);
+		var row = parseInt(e.target.getAttribute("row"), 10);
+		var col = parseInt(e.target.getAtrribute("col"), 10);
 		var n = parseInt(event.target.innerText, 10);
 		if (sudokuAlg.verifySudoku(row, col, n, globalSudoku)) {
 			e.target.innerText = n;
 			sudokuAlg.updateSudoku(row, col, parseInt(event.target.innerText, 10), globalSudoku);
+			
+			//todo 判断row和col是否等于SIZE,如果相等弹出完成数独的提示框
+			
 			$("#modalBox").unbind();
 			document.getElementById("testModal").style.display = "none";
 		} else {
@@ -271,5 +297,9 @@ function generateUI() {
 	globalSudoku = sudokuAlg.generateSudoku();
 	sudokuAlg.sudokuDig(levelCfg["lowlevel"], globalSudoku);
 	console.log(globalSudoku);
+	
+	domList = domFactory();
+	changeMode("lowlevel");
+	
 	generateUI();
 } ());

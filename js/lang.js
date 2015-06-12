@@ -55,6 +55,7 @@ var langFun = (function(){
 			timer.close();
 			timer.start();
 		};
+		return timer;
 	};	
 	return module;
 }());

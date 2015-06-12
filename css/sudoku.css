@@ -11,7 +11,7 @@ div.option,div.option:hover,div.option:active{
 	width: 110px;
 	position: absolute;
 	left: 10px;
-	height: 240px;
+	top: 10px;
 	background-color: red;	
 }
 div.option:hover{
@@ -108,7 +108,13 @@ div.choice{
 	height: 30px;
 }
 
+.unselected {
+	position: relative;
+}
 
+.unselected:hover {
+	-webkit-filter: grayscale(0) saturate(2);
+}
 
 
 
