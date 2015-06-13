@@ -11,14 +11,7 @@ div.option,div.option:hover,div.option:active{
 	width: 110px;
 	position: absolute;
 	left: 10px;
-	top: 10px;
-	background-color: red;	
-}
-div.option:hover{
-	background-color: royalblue; 	
-}
-div.option:active{
-	background-color: yellow;	
+	top: 10px;	
 }
 div#sudokuWrapper{
 	position: absolute;
@@ -104,8 +97,15 @@ div.modalCell:active{
 
 div.choice{
 	position: relative;
+	float: left;
 	width: 130px;
 	height: 30px;
+	color: darkblue;
+	text-align: center;
+	font-weight: bolder;
+	line-height: 30px;
+	box-shadow: 0px 0px 6px 3px lightgoldenrodyellow inset;
+	background-color: cornflowerblue;
 }
 
 .unselected {

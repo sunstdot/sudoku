@@ -1,4 +1,4 @@
-var option, OPTIONS = ["lowlevel", "midlevel", "highlevel", "aboutAuthor"],
+var OPTIONS = ["lowlevel", "midlevel", "highlevel", "aboutAuther"],
 	optionCfg = {
 		"lowlevel": "初级",
 		"midlevel": "中级",
@@ -6,7 +6,7 @@ var option, OPTIONS = ["lowlevel", "midlevel", "highlevel", "aboutAuthor"],
 		"aboutAuther": "作者"
 	},
 	levelCfg = {
-		"lowlevel": "40",
+		"lowlevel": "30",
 		"midlevel": "50",
 		"highlevel": "60"
 	},
@@ -116,13 +116,16 @@ var sudokuAlg = (function () {
 //=============================目录部分begin=======================================
 var select = function(dom){
 	if(selectDom){
-		mode.removeChild(selectDom);
+		optionDom.removeChild(selectDom);
 	}
 	dom.className = "";
 	dom.style.cssText = "";
 	dom.classList.add("choice");
 	dom.classList.add("selected");
-	dom.style.width = "27px";
+	
+	while(optionDom.firstChild){
+		optionDom.removeChild(optionDom.firstChild);
+	}
 	optionDom.appendChild(dom);
 	selectDom = dom;
 };	
@@ -132,9 +135,10 @@ function domFactory() {
 	var list = {}, hidden = true,add = 30,delay = 70,
 		domsIn = function () {
 			var key;
-			optionDom.style.height = '210px';
+			optionDom.style.height = '150px';
 			for (key in list) {
 				if (list.hasOwnProperty(key)) {
+					optionDom.appendChild(list[key]);
 					list[key].classList.remove("out");
 					list[key].style.left = "-150px";
 					list[key].classList.add("into");
@@ -161,7 +165,8 @@ function domFactory() {
 		
 	OPTIONS.forEach(function (name) {
 		var dom_main = document.createElement("div");
-		dom_main.innerHtml = optionCfg[name];
+		console.log(optionCfg[name]);
+		dom_main.innerHTML = optionCfg[name];
 		dom_main.helper = {};
 		dom_main.helper.selected = function () {
 			dom_main.style.backgroundColor = "lightgreen";
@@ -179,7 +184,6 @@ function domFactory() {
 		};
 		delay += add;
 		dom_main.style.webkitAnimationDelay = delay+"ms";
-		
 		//为dom添加点击事件
 		dom_main.onclick = function(e){
 			var dom;
@@ -206,6 +210,9 @@ function domFactory() {
 				selectedMode = name;
 				//广播改变目录显示
 				select(dom);
+				if(name !== "aboutAuther"){
+					generateData(name);
+				}
 			}else{
 				domsOut();
 			}		
@@ -219,10 +226,16 @@ function domFactory() {
 	return list;
 };
 
+//var initMode = function(){
+//	mode.style.height = '30px';
+//	domList[]
+//}
+
 
 
 //=============================目录部分begin=======================================
 function changeMode(type){
+	optionDom.style.height = '30px';
 	domList[type].onclick();	
 };
 
@@ -240,7 +253,7 @@ function generateModelBox(e) {
 	//使用模态框确定事件绑定的唯一性
 	$("#modalBox").bind("click", function (event) {
 		var row = parseInt(e.target.getAttribute("row"), 10);
-		var col = parseInt(e.target.getAtrribute("col"), 10);
+		var col = parseInt(e.target.getAttribute("col"), 10);
 		var n = parseInt(event.target.innerText, 10);
 		if (sudokuAlg.verifySudoku(row, col, n, globalSudoku)) {
 			e.target.innerText = n;
@@ -259,23 +272,28 @@ function generateModelBox(e) {
 
 
 //根据数组生成table
-function generateUI() {
+function generateUI(sudokuData) {
 	//todo 数独界面生成
 	var tableDom = document.createElement("table");
+	var sudokuDom = document.getElementById("sudokuWrapper");
+	//在生成sudoku前要清空sudokudom
+	while(sudokuDom.firstChild){
+		sudokuDom.removeChild(sudokuDom.firstChild);
+	}
 	tableDom.setAttribute("class", "mainTable");
 	var i, j;
-	for (i = 0; i < globalSudoku.length; ++i) {
+	for (i = 0; i < sudokuData.length; ++i) {
 		var trDom = document.createElement("tr");
-		for (j = 0; j < globalSudoku[i].length; ++j) {
+		for (j = 0; j < sudokuData[i].length; ++j) {
 			var tdDom = document.createElement("td");
 			var divDom = document.createElement("div");
 			divDom.setAttribute("class", "cell");
 			//设置单元格所在的位置属性
 			divDom.setAttribute("row", i);
 			divDom.setAttribute("col", j);
-			divDom.innerText = globalSudoku[i][j];
+			divDom.innerText = sudokuData[i][j];
 
-			if (globalSudoku[i][j] === 0) {
+			if (sudokuData[i][j] === 0) {
 				divDom.classList.add("gridBord");
 				divDom.addEventListener("click", generateModelBox, false);
 			} else {
@@ -287,19 +305,21 @@ function generateUI() {
 		}
 		tableDom.appendChild(trDom);
 	}
-	document.getElementById("sudokuWrapper").appendChild(tableDom);
-}
+	sudokuDom.appendChild(tableDom);
+};
+
+function generateData(type){
+	globalSudoku = sudokuAlg.generateSudoku();
+	sudokuAlg.sudokuDig(levelCfg[type], globalSudoku);
+	generateUI(globalSudoku);
+};
 
 
 
 (function initUI() {
-	option = document.getElementById("option");
-	globalSudoku = sudokuAlg.generateSudoku();
-	sudokuAlg.sudokuDig(levelCfg["lowlevel"], globalSudoku);
-	console.log(globalSudoku);
-	
+	var defaultType = 'lowlevel';
+	generateData(defaultType);
 	domList = domFactory();
+//	setTimeout(initMode,10);
 	changeMode("lowlevel");
-	
-	generateUI();
 } ());

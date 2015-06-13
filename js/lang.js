@@ -56,6 +56,9 @@ var langFun = (function(){
 			timer.start();
 		};
 		return timer;
-	};	
+	};
+	module.isArray = function(){
+		return false;
+	}	
 	return module;
 }());
