@@ -116,7 +116,61 @@ div.choice{
 	-webkit-filter: grayscale(0) saturate(2);
 }
 
+.btnClass{
+	position: absolute;
+	left: 400px;
+    top: 140px;
+    width: 400px;
+    height: 60px;
+	font-weight: bolder;
+}
+.funcBtn{
+	position: relative;
+	float: left;
+	width: 90px;
+	height: 28px;
+	margin: 10px 30px 0px 0px; 
+	-webkit-user-select:none;
+}
 
+/*btn 类的按钮class*/
+.btn_normal{
+	font-size: 14px;
+  	line-height: 28px;
+  	text-align: center;
+  	padding: 0 8px;
+}
+
+.btn_dark_green{
+	  background-color: #61c788;
+	  background-image: -webkit-gradient(linear,0 0,0 100%,from(#6bc88e),to(#52c77e));
+	  background-image: -webkit-linear-gradient(top,#6bc88e,#52c77e);
+	  background-image: -moz-linear-gradient(top,#6bc88e,#52c77e);
+	  background-image: linear-gradient(top,#6bc88e,#52c77e);
+	  background-repeat: repeat-x;
+	  border: 1px solid #1cac52;
+}
+.btn_font{
+	  padding: 0 14px;
+	  border-radius: 4px;
+	  cursor: pointer;
+	  font-size: 14px;
+	  box-shadow: 0 1px 0 rgba(255,255,255,.15) inset,0 1px 1px rgba(0,0,0,.15);
+	  text-shadow: 0 -1px 0 rgba(0,0,0,.25);
+	  color: #fff;
+	  outline: 0;
+	  -webkit-box-sizing: border-box;
+	  -moz-box-sizing: border-box;
+	  box-sizing: border-box;
+	  display: inline-block;
+}
+.btn_gray{
+	  border: 1px solid #dddedf;
+	  background-color: #fbfcfd;
+	  color: #9d9e9f;
+	  text-shadow: none;
+	  box-shadow: none;
+}
 
 
 
